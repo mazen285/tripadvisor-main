@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Required for FilteringTextInputFormatter
 import 'confirmation.dart';
 
 class PaymentScreen extends StatefulWidget {
@@ -112,13 +113,16 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         SizedBox(height: 20),
                         _buildTextField('Card Number', Icons.credit_card,
                             TextInputType.number, (value) {
-                          if (value == null ||
-                              value.isEmpty ||
-                              value.length < 16) {
-                            return 'Please enter a valid card number';
-                          }
-                          return null;
-                        }),
+                              if (value == null ||
+                                  value.isEmpty ||
+                                  value.length < 16) {
+                                return 'Please enter a valid card number';
+                              }
+                              return null;
+                            },
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ]),
                         SizedBox(height: 20),
                         _buildTextField(
                             'Expiry Date (MM/YY)',
@@ -134,14 +138,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         }),
                         SizedBox(height: 20),
                         _buildTextField('CVV', Icons.lock, TextInputType.number,
-                            (value) {
-                          if (value == null ||
-                              value.isEmpty ||
-                              value.length != 3) {
-                            return 'Please enter a valid CVV';
-                          }
-                          return null;
-                        }, isPassword: true),
+                                (value) {
+                              if (value == null ||
+                                  value.isEmpty ||
+                                  value.length != 3) {
+                                return 'Please enter a valid CVV';
+                              }
+                              return null;
+                            }, isPassword: true),
                       ],
                     ),
                   ),
@@ -153,7 +157,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blueGrey,
                       padding:
-                          EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                      EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
@@ -187,7 +191,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                               content:
-                                  Text('Please fill in all fields correctly')),
+                              Text('Please fill in all fields correctly')),
                         );
                       }
                     },
@@ -229,10 +233,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   Widget _buildTextField(String hintText, IconData icon,
       TextInputType inputType, String? Function(String?) validator,
-      {bool isPassword = false}) {
+      {bool isPassword = false, List<TextInputFormatter>? inputFormatters}) {
     return TextFormField(
       keyboardType: inputType,
       obscureText: isPassword,
+      inputFormatters: inputFormatters,
       style: TextStyle(color: Colors.white),
       decoration: InputDecoration(
         filled: true,
@@ -249,3 +254,4 @@ class _PaymentScreenState extends State<PaymentScreen> {
     );
   }
 }
+v
